@@ -5,6 +5,7 @@ from scrapy.contrib.spiders import XMLFeedSpider
 from elections2012.items import StoryItem
 from xml.dom.minidom import parseString
 from datetime import datetime
+import rfc822
 
 class spider1(XMLFeedSpider):
     name='elections2012'
@@ -20,11 +21,12 @@ class spider1(XMLFeedSpider):
         link = node.select('link').extract()
 	pubDate = node.select('pubDate').extract()	
 	
+		
 	item['title'] = parseString(title[0].encode('utf-8')).firstChild.firstChild.toxml()
 	item['description'] = parseString(description[0].encode('utf-8')).firstChild.firstChild.toxml()
 	item['link'] = parseString(link[0].encode('utf-8')).firstChild.firstChild.toxml()
 	item['source'] = 'bbc'
-	item['pubDate'] = datetime.now() #parseString(pubDate[0]).firstChild.firstChild.toxml()
+	item['pubDate'] = datetime.strptime(parseString(pubDate[0]).firstChild.firstChild.toxml()[:-4], '%a, %d %b %Y %H:%M:%S')
 	item['created'] = datetime.now()
 
 	return item 
